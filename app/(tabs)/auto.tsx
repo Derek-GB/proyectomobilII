@@ -145,9 +145,11 @@ export default function Auto() {
                       <Text style={styles.productName}>{product.name}</Text>
 
                       {/* ✅ CODE */}
-                      <Text style={styles.productCode}>
-                        {product.code}
-                      </Text>
+                      {product.code && (
+                        <Text style={styles.productCode}>
+                          {product.code}
+                        </Text>
+                      )}
 
                       {/* ✅ SUBTITLE */}
                       {product.subtitle && (
@@ -156,12 +158,45 @@ export default function Auto() {
                         </Text>
                       )}
 
-                      <Text style={styles.description}>
-                        {product.description}
-                      </Text>
+                      {product.description && (
+                        <Text style={styles.description}>
+                          {product.description}
+                        </Text>
+                      )}
                     </Pressable>
 
                     {/* 🔥 MEDIDAS */}
+                    {expandedId === product.id && (
+                      <View style={styles.measureContainer}>
+                        <Text style={styles.measureHeader}>
+                          Medidas del producto
+                        </Text>
+
+                        {product.measuresImages?.length > 0 ? (
+                          <View>
+                            {product.measuresImages.map(
+                              (img: any, index: number) => (
+                                <Pressable
+                                  key={index}
+                                  onPress={() => setSelectedMeasureImage(img)}
+                                >
+                                  <Image
+                                    source={img}
+                                    style={styles.measureImage}
+                                    resizeMode="contain"
+                                  />
+                                </Pressable>
+                              )
+                            )}
+                          </View>
+                        ) : (
+                          <Text style={styles.measureRow}>
+                            Sin medidas disponibles.
+                          </Text>
+                        )}
+                      </View>
+                    )}
+
                     <Pressable
                       onPress={() =>
                         setExpandedId(
@@ -176,35 +211,6 @@ export default function Auto() {
                           : 'Ver medidas'}
                       </Text>
                     </Pressable>
-
-                    {expandedId === product.id && (
-                      <View style={styles.measureContainer}>
-                        <Text style={styles.measureHeader}>
-                          Medidas del producto
-                        </Text>
-
-                        {product.measuresImages?.length > 0 ? (
-                          product.measuresImages.map(
-                            (img: any, index: number) => (
-                              <Pressable
-                                key={index}
-                                onPress={() => setSelectedMeasureImage(img)}
-                              >
-                                <Image
-                                  source={img}
-                                  style={styles.measureImage}
-                                  resizeMode="contain"
-                                />
-                              </Pressable>
-                            )
-                          )
-                        ) : (
-                          <Text style={styles.measureRow}>
-                            Sin medidas disponibles.
-                          </Text>
-                        )}
-                      </View>
-                    )}
                   </View>
                 );
               })}
@@ -321,14 +327,16 @@ const styles = StyleSheet.create({
 
   categoryTitle: {
     padding: 10,
-    backgroundColor: '#000',
-    color: '#FFF',
+    backgroundColor: '#000000',
+    color: '#FFFFFF',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    fontFamily: 'Open Sans',
   },
 
   productsContainer: {
     marginHorizontal: 10,
+    marginBottom: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
@@ -338,10 +346,16 @@ const styles = StyleSheet.create({
     width: '30%',
     padding: 10,
     marginVertical: 12,
-    backgroundColor: '#FFF',
+    marginHorizontal: 4,
+    backgroundColor: '#FFFFFF',
     minHeight: 360,
     borderRadius: 12,
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    justifyContent: 'space-between',
   },
 
   image: { width: '100%', height: 140, borderRadius: 8 },
@@ -360,7 +374,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  imageCarousel: { position: 'relative', alignItems: 'center' },
+  imageCarousel: {
+    position: 'relative',
+    width: '100%',
+    marginBottom: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   imageTapArea: { width: '100%' },
 
@@ -388,12 +408,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  carouselArrowText: { color: '#FFF', fontWeight: '700' },
+  carouselArrowText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
 
   carouselDots: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 6,
+    gap: 4,
   },
 
   carouselDot: {
@@ -401,19 +426,22 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: '#B3B3B3',
-    marginHorizontal: 2,
   },
 
   carouselDotActive: { backgroundColor: '#D32F2F' },
 
   productName: {
-    fontSize: 12,
+    fontFamily: 'Open Sans',
+    fontSize: 14,
+    marginBottom: 4,
+    color: '#000000',
     fontWeight: '600',
     textAlign: 'center',
   },
 
   productCode: {
-    fontSize: 10,
+    fontFamily: 'Open Sans',
+    fontSize: 12,
     color: '#D32F2F',
     textAlign: 'center',
     fontWeight: '700',
@@ -421,13 +449,19 @@ const styles = StyleSheet.create({
   },
 
   productSubtitle: {
-    fontSize: 10,
+    fontFamily: 'Open Sans',
+    fontSize: 12,
     color: '#555',
     textAlign: 'center',
     marginBottom: 4,
   },
 
-  description: { fontSize: 10, color: '#7A7A7A' },
+  description: {
+    fontFamily: 'Open Sans',
+    fontSize: 12,
+    textAlign: 'left',
+    color: '#7A7A7A',
+  },
 
   measureToggle: {
     marginTop: 10,
@@ -440,21 +474,30 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 11,
     textAlign: 'center',
+    fontWeight: '600',
   },
 
   measureContainer: {
     marginTop: 8,
     backgroundColor: '#F9F9F9',
+    borderRadius: 6,
     padding: 6,
   },
 
   measureHeader: {
-    fontSize: 10,
+    fontFamily: 'Open Sans',
+    fontSize: 12,
     fontWeight: '700',
     marginBottom: 4,
+    color: '#333333',
   },
 
-  measureRow: { fontSize: 10 },
+  measureRow: {
+    fontFamily: 'Open Sans',
+    fontSize: 12,
+    color: '#333333',
+    marginBottom: 2,
+  },
 
   measureImage: {
     width: '100%',
@@ -464,38 +507,78 @@ const styles = StyleSheet.create({
 
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.75)',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
   },
 
   modalCard: {
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
+    width: '100%',
+    maxWidth: 480,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 20,
+    maxHeight: '88%',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
   },
 
-  modalImage: { width: '100%', height: 160 },
+  modalImage: {
+    width: '100%',
+    height: 190,
+    borderRadius: 12,
+    marginBottom: 14,
+  },
 
-  modalTitle: { fontSize: 20, fontWeight: '700' },
-  modalSubtitle: { fontSize: 14, marginBottom: 10 },
+  modalTitle: {
+    fontFamily: 'Open Sans',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#111111',
+    marginBottom: 6,
+  },
+  modalSubtitle: {
+    fontFamily: 'Open Sans',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#444444',
+    marginBottom: 12,
+  },
 
   modalSectionTitle: {
-    fontSize: 16,
+    fontFamily: 'Open Sans',
+    fontSize: 18,
     fontWeight: '700',
-    marginTop: 8,
+    color: '#111111',
+    marginTop: 10,
+    marginBottom: 6,
   },
 
-  modalItem: { fontSize: 13 },
+  modalItem: {
+    fontFamily: 'Open Sans',
+    fontSize: 15,
+    color: '#333333',
+    marginBottom: 4,
+  },
 
   closeButton: {
     marginTop: 16,
-    backgroundColor: '#000',
-    padding: 10,
+    alignSelf: 'flex-end',
+    backgroundColor: '#000000',
     borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
   },
 
-  closeButtonText: { color: '#FFF', textAlign: 'center' },
+  closeButtonText: {
+    fontFamily: 'Open Sans',
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
 
   fullImage: {
     width: '95%',

@@ -62,7 +62,7 @@ export default function Anclajes() {
       const found = category.products.find(
         (product: any) => product.id === selectedProductId
       );
-      if (found) return found;
+      if (found) return found as any;
     }
     return null;
   }, [allProducts, selectedProductId]);
@@ -164,6 +164,37 @@ export default function Anclajes() {
                     </Pressable>
 
                     {/* MEDIDAS */}
+                    {expandedId === product.id && (
+                      <View style={styles.measureContainer}>
+                        <Text style={styles.measureHeader}>
+                          Medidas del producto
+                        </Text>
+
+                        {product.measuresImages?.length > 0 ? (
+                          <View>
+                            {product.measuresImages.map(
+                              (img: any, index: number) => (
+                                <Pressable
+                                  key={index}
+                                  onPress={() => setSelectedMeasureImage(img)}
+                                >
+                                  <Image
+                                    source={img}
+                                    style={styles.measureImage}
+                                    resizeMode="contain"
+                                  />
+                                </Pressable>
+                              )
+                            )}
+                          </View>
+                        ) : (
+                          <Text style={styles.measureRow}>
+                            Sin medidas disponibles.
+                          </Text>
+                        )}
+                      </View>
+                    )}
+
                     <Pressable
                       onPress={() =>
                         setExpandedId(
@@ -178,35 +209,6 @@ export default function Anclajes() {
                           : 'Ver medidas'}
                       </Text>
                     </Pressable>
-
-                    {expandedId === product.id && (
-                      <View style={styles.measureContainer}>
-                        <Text style={styles.measureHeader}>
-                          Medidas del producto
-                        </Text>
-
-                        {product.measuresImages?.length > 0 ? (
-                          product.measuresImages.map(
-                            (img: any, index: number) => (
-                              <Pressable
-                                key={index}
-                                onPress={() => setSelectedMeasureImage(img)}
-                              >
-                                <Image
-                                  source={img}
-                                  style={styles.measureImage}
-                                  resizeMode="contain"
-                                />
-                              </Pressable>
-                            )
-                          )
-                        ) : (
-                          <Text style={styles.measureRow}>
-                            Sin medidas disponibles.
-                          </Text>
-                        )}
-                      </View>
-                    )}
                   </View>
                 );
               })}
@@ -303,14 +305,16 @@ export default function Anclajes() {
         onRequestClose={() => setSelectedMeasureImage(null)}
       >
         <Pressable
-          style={styles.modalBackdrop}
+          style={styles.imageModalBackdrop}
           onPress={() => setSelectedMeasureImage(null)}
         >
-          <Image
-            source={selectedMeasureImage}
-            style={styles.fullImage}
-            resizeMode="contain"
-          />
+          <View style={styles.imageModalContent}>
+            <Image
+              source={selectedMeasureImage}
+              style={styles.imageModalImage}
+              resizeMode="contain"
+            />
+          </View>
         </Pressable>
       </Modal>
     </View>
@@ -332,7 +336,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     color: '#FFFFFF',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    fontFamily: 'Open Sans',
   },
 
   productsContainer: {
@@ -428,23 +433,41 @@ const styles = StyleSheet.create({
   },
 
   productName: {
-    fontSize: 12,
+    fontFamily: 'Open Sans',
+    fontSize: 14,
     marginBottom: 4,
     color: '#000000',
     fontWeight: '600',
     textAlign: 'center',
   },
   price: {
+    fontFamily: 'Open Sans',
     color: '#D32F2F',
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '700',
     marginBottom: 4,
     textAlign: 'center',
   },
   description: {
-    fontSize: 10,
+    fontFamily: 'Open Sans',
+    fontSize: 12,
     textAlign: 'left',
     color: '#7A7A7A',
+  },
+  productCode: {
+    fontFamily: 'Open Sans',
+    fontSize: 12,
+    color: '#D32F2F',
+    textAlign: 'center',
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  productSubtitle: {
+    fontFamily: 'Open Sans',
+    fontSize: 12,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 4,
   },
 
   measureToggle: {
@@ -465,57 +488,84 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
     borderRadius: 6,
     padding: 6,
+    overflow: 'hidden',
   },
   measureHeader: {
-    fontSize: 10,
+    fontFamily: 'Open Sans',
+    fontSize: 12,
     fontWeight: '700',
     marginBottom: 4,
     color: '#333333',
   },
   measureRow: {
-    fontSize: 10,
+    fontFamily: 'Open Sans',
+    fontSize: 12,
     color: '#333333',
     marginBottom: 2,
+  },
+  measureImage: {
+    width: '100%',
+    height: 120,
+    marginBottom: 6,
+    borderRadius: 6,
   },
 
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
   },
+  modalImageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   modalCard: {
+    width: '100%',
+    maxWidth: 480,
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    maxHeight: '90%',
+    borderRadius: 18,
+    padding: 20,
+    maxHeight: '88%',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
   },
   modalImage: {
     width: '100%',
-    height: 160,
-    marginBottom: 10,
+    height: 190,
+    marginBottom: 14,
+    borderRadius: 12,
   },
   modalTitle: {
-    fontSize: 20,
+    fontFamily: 'Open Sans',
+    fontSize: 22,
     fontWeight: '700',
     color: '#111111',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   modalSubtitle: {
-    fontSize: 14,
+    fontFamily: 'Open Sans',
+    fontSize: 16,
     fontWeight: '600',
-    color: '#222222',
-    marginBottom: 10,
+    color: '#444444',
+    marginBottom: 12,
   },
   modalSectionTitle: {
-    fontSize: 16,
+    fontFamily: 'Open Sans',
+    fontSize: 17,
     fontWeight: '700',
     color: '#111111',
-    marginTop: 8,
+    marginTop: 10,
     marginBottom: 6,
   },
   modalItem: {
-    fontSize: 13,
+    fontFamily: 'Open Sans',
+    fontSize: 15,
     color: '#333333',
     marginBottom: 4,
   },
@@ -530,5 +580,27 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: '#FFFFFF',
     fontWeight: '700',
+  },
+  fullImage: {
+    width: '95%',
+    height: '85%',
+    alignSelf: 'center',
+  },
+  imageModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageModalContent: {
+    width: '95%',
+    height: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageModalImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
   },
 });
