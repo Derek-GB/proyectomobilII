@@ -11,7 +11,7 @@ interface Product {
 
 export const categories = [
   {
-    name: 'Anclaje',
+    name: 'ANCLAJE',
     subcategories: [
       {
         code: '05.01 (Anclaje metalico)',
